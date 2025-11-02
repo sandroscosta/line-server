@@ -3,7 +3,7 @@
 require 'dotenv/load'
 require 'sinatra'
 require 'json'
-require './lib/line_reader/line_reader'
+require_relative 'line_reader/line_reader'
 
 Dotenv.load
 
@@ -15,6 +15,10 @@ LINE_READER = LineReader.new(FILE_PATH)
 
 get '/' do
   'To access the API, use the following URLs: http://localhost:3000/lines/1'
+end
+
+get '/healthcheck' do
+  {status: 'ok'}.to_json
 end
 
 get '/lines/:index' do

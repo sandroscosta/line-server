@@ -9,6 +9,8 @@ task :generate_data, [:size] do |t, args|
   args.with_defaults(size: 10)
   file_size = args[:size].to_i * 1024 * 1024
 
+  puts "Generating a file of size approximately #{file_size} bytes..."
+
   filename = "sample_data_#{args.size}mb.txt"
   filepath = File.join(ROOTDIR, 'data', filename)
 
