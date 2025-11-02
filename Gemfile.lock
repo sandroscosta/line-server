@@ -9,6 +9,7 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     logger (1.7.0)
+    minitest (5.26.0)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.7.4)
@@ -40,6 +41,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv (~> 3.1)
   faker (~> 3.5)
+  minitest (~> 5.26)
   puma (~> 6.0)
   rake (~> 13.3)
   sinatra (~> 4.2, >= 4.2.1)

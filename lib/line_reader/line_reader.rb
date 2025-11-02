@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-## Reads line from a file, creating a index by line for easy access
+# Reads line from a file, creating a index by line for easy access
 class LineReader
   ##
   # Creates a new LineReader instance
