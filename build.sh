@@ -49,7 +49,11 @@ then
 fi
 
 # Install Ruby dependencies
+echo "Installing Ruby dependencies..."
 bundle
 
 # Generate the default data file
+echo "Generating default data file... this may take a few minutes."
 rake generate_data
+
+echo "Setup complete."

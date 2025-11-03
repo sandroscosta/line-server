@@ -33,6 +33,7 @@ class LineReader
   private
 
   def build_index
+    # this creates an enumerator that yields the byte offset of each line start
     offset_enumerator = Enumerator.new do |yielder|
       File.open(@filepath, 'rb') do |file|
         until file.eof?

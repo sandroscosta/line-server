@@ -12,19 +12,19 @@ RUN apt-get update && apt-get install -y \
 # Copy Gemfile and Gemfile.lock (if it exists)
 COPY Gemfile Gemfile.lock* ./
 
+# Copy the rest of the application code
+COPY . .
+
 # Install Ruby dependencies and build the application
 RUN chmod +x ./build.sh
-RUN ./build.sh
-
-# Copy application code
-COPY . .
 RUN chmod +x ./run.sh
+RUN ./build.sh
 
 # Create a non-root user
 RUN useradd -m -u 1000 app && chown -R app:app /app
 USER app
 
-# Expose port for Sinatra app (default 4567)
+# Expose port for Sinatra app served by Puma (default is 3000)
 EXPOSE 3000
 
 # Health check

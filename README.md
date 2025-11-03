@@ -5,7 +5,7 @@ This project implements a simple line server.
 ## Concept
 The system eagerly loads a text file when booting.
 The `LineReader` class creates a byte index of the text file that stores where each line is.
-This makes the system very performant, as we are not really loading the file into memory all at once. There's a small startup process (depending on the size of the file) and a small memory overhead.
+This makes the system very performant, as we are not really loading the file into memory all at once. There's a small startup process (depending on the size of the file) and a small memory overhead. `LineReader` reads file as binary as a way to handle any file encoding correctly.
 
 When the user requests a line via [http://localhost:3000/lines/100](http://localhost:3000/lines/100), the `LineReader` fetches the correct index
 from the index array and instantly displays it.
@@ -52,12 +52,24 @@ About a days worth of work.
 
 ## Future developments
 With no time restriction, I could think about simple things, like line caching. I also thought about adding a search functionatily to search for a specific term on the chosen line, similar to how the grep command works.
+Could also see some new endpoints, as a way to get text excerpts between line ranges. This might be useful for users that want multiple lines of the documents.
 Finally, having a way to load files remotely, from an FTP or a S3 bucket would make sense for this type of service.
-As a further optimization step, we could think and benchmark the possibility of spliting large files into smaller files to see if access time would improve, using threading to process and, possibly, switching from Puma to Falcon as a way to gain some extra performance.
+As a further optimization step, we could think and benchmark the possibility of spliting large files into smaller files to see if access time would improve, using threading to process and, possibly, switching from Puma to Falcon as a way to gain some extra performance. If it was doable, we could also check on doing some text cleanup and transformations as a way to reduce the size of the document.
 
 As for time and effort allocation, I would always start with the smaller, battle tested options, like having a cache layer that allows a line that was previously search for to be served without hitting the text file.
 
 I'm always seeing and exploring this exercise from a web service perspective, because I feel that this is way more than a script. That's why I'm focussing all my attention on the web performance aspect of it.
+
+## Code critic
+Overall, I tried to follow all SOLID principles and to keep the code as DRY as possible, but there are a few things that I could do to improve the code.
+I could extract the app login into 2 files, one to initialize the app and a Controller that contains the defined endpoints, so I can keep this more structured. This would help future developments.
+
+One of the things that could improve as well is documentation and naming, which is the hardest task in programming. I could've called the class `LineIndexer` or `LineAccessor` but ended up with `LineReader`, expecting it to be easily understandable.
+The Rake commands to generate the data file are also quite simplistic and might not have all the necessary edge use cases to properly test the system.
+
+Also, I haven't tested this on Windows, only in Linux, so there might be issues with using it via a Windows OS.
+
+At the end, I could've build a better build script to understand the current environment and some more tests for the Sinatra service itself, but I didn't feel that it was useful for the project.
 
 ## Performance
 Using Grafana K6, I did some comparative tests for 1000 concurrent users requesting random line information from the server.
@@ -101,9 +113,9 @@ It is expected that the trend continues with larger 10GB files. Initial load wil
 In the eventuality that we need more performance, we can always configure `puma` to have more worker and, that way, guarantee a higher throughput.
 
 ## Setup
-This project uses Ruby.
+This project was built using Ruby v3.4.2
 
-To install Ruby you can either install it manually or use `mise install` to install all dependencies from the `mise.toml` file.
+To install Ruby you can either install it manually using the following instructions [https://mac.install.guide/ruby/13](https://mac.install.guide/ruby/13) or use `mise install` to install all dependencies from the `mise.toml` file, if you have [https://mise.jdx.dev/](https://mise.jdx.dev/) installed on your system.
 There's also a `.ruby-version` file that specifies the Ruby version used to develop the project.
 
 ### Build the project
@@ -115,7 +127,7 @@ A build script is available via:
 ```
 If you have docker installed, you can also run the docker command to build the project and run it from inside a container.
 ```bash
-docker build -t line-server .
+docker compose build
 ```
 
 ## Usage
@@ -126,7 +138,12 @@ The service can be started via the `run.sh` script.
 
 If you have docker installed, you can also run the docker command to start the service.
 ```bash
-docker run -p 3000:3000 line-server
+docker compose up -d
+```
+
+To stop the service, use:
+```bash
+docker compose stop
 ```
 
 You can then access the service via `http://localhost:3000`.
